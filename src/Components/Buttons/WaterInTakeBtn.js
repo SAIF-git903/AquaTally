@@ -1,11 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { doc, getDoc } from 'firebase/firestore'
+import { db, auth } from '../../../firebase'
 
 
-const WaterInTakeBtn = ({ onPress }) => {
+const WaterInTakeBtn = ({ onPress, title }) => {
+
+
     return (
         <TouchableOpacity style={styles.container} onPress={onPress}>
-            <Text style={styles.btnTxt}>Add Entry</Text>
+            <Text style={styles.btnTxt}>{title}</Text>
         </TouchableOpacity>
     )
 }

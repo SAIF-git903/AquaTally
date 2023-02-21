@@ -1,15 +1,48 @@
-import { WATER_CONSUMPTION } from "./constants";
+import {
+    USER_LOGGING_IN,
+    USER_LOGGING_OUT,
+    CURRENT_USER_UID,
+    CURRENT_USER_NAME,
+    CURRENT_USER_EMAIL
+} from "./constants";
+
 
 const initalState = {
-    todaysWaterConsumption: []
+    token: null,
+    currentUserUid: null,
+    currentUserName: null,
+    currentUserEmail: null
 }
 
 const reducer = (state = initalState, { type, payload }) => {
     switch (type) {
-        case WATER_CONSUMPTION:
+        case USER_LOGGING_IN:
             return {
                 ...state,
-                todaysWaterConsumption: [...state.todaysWaterConsumption, payload]
+                token: payload
+            }
+        case USER_LOGGING_OUT:
+            return {
+                ...state,
+                token: null,
+                currentUserUid: null,
+                currentUserName: null,
+                currentUserEmail: null
+            }
+        case CURRENT_USER_UID:
+            return {
+                ...state,
+                currentUserUid: payload
+            }
+        case CURRENT_USER_NAME:
+            return {
+                ...state,
+                currentUserName: payload
+            }
+        case CURRENT_USER_EMAIL:
+            return {
+                ...state,
+                currentUserEmail: payload
             }
         default:
             return state

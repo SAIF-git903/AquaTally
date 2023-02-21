@@ -29,12 +29,9 @@ const styles = StyleSheet.create({
         padding: 15
     },
     userNameTxt: {
-        color: "white",
-        fontWeight: "bold",
-        fontSize: 19,
-        padding: 15,
-        position:"absolute",
-        right: 10
+        position: "absolute",
+        right: 20,
+        top: 10,
     }
 })
 
