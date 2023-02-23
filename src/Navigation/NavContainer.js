@@ -10,7 +10,6 @@ import Splash from '../Screens/SplashScreen'
 import { useSelector } from 'react-redux'
 
 
-
 const NavContainer = () => {
 
     const token = useSelector(state => state.token)
@@ -27,6 +26,7 @@ const NavContainer = () => {
                     headerBackVisible: false,
                     headerShown: false,
                 }}>
+                {/* <Stack.Screen name="Splash" component={Splash} /> */}
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="SignUp" component={SignUp} />
             </Stack.Navigator>
@@ -44,7 +44,11 @@ const NavContainer = () => {
                 <Stack.Screen name="HomeScreen" component={HomeScreen} />
                 <Stack.Screen name="NewEntry" component={NewEntry} />
                 <Stack.Screen name="Profile" component={Profile}
-                    options={{ headerShown: true, headerBackVisible: true }}
+                    options={{
+                        headerShown: true,
+                        headerBackVisible: true,
+                        headerTitle: "",
+                    }}
                 />
             </Stack.Navigator>
         );

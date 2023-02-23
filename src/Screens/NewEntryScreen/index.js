@@ -1,18 +1,35 @@
-import { Text, View, StyleSheet } from 'react-native'
-import React, {  useState } from 'react'
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { TextInput } from 'react-native-paper';
 import InputButton from '../../Components/InputButton';
 import WaterInTakeBtn from '../../Components/Buttons/WaterInTakeBtn';
 import { doc, getDoc, collection, updateDoc } from 'firebase/firestore';
-import { db} from '../../../firebase';
+import { db } from '../../../firebase';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import DropDownPicker from 'react-native-dropdown-picker';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import Modal from 'react-native-modal';
+import InfoModal from '../../Components/InfoModal';
+import styles from './style';
 
 
 const NewEntry = () => {
 
     const currentUserId = useSelector(state => state?.currentUserUid)
-    const [glass, setGlasses] = useState(null)
+    const [glass, setGlasses] = useState("")
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [time, setTime] = useState("")
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState();
+    const [dailyWaterLimit, setDailyWaterLimit] = useState("")
+    const [items, setItems] = useState([
+        { label: '1 liter', value: '1000' },
+        { label: '1.5 liter', value: '1500' },
+        { label: '2 liter', value: '2000' },
+        { label: '2.5 liter', value: '2500' },
+        { label: '3 liter', value: '3000' },
+    ]);
 
     const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const today = new Date();
@@ -20,23 +37,41 @@ const NewEntry = () => {
 
 
     async function handleConfirm() {
-      const usersColRef = collection(db, "users");
-      const parentDocRef = doc(usersColRef, currentUserId);
-      const subColRef = collection(parentDocRef, weekday);
-      const subDocRef = doc(subColRef, "Data");
-    
-      const docSnapshot = await getDoc(subDocRef);
-      const currentGraphArr = docSnapshot.data()?.graphArr || [];
-    
-      const newObject = { value: glass };
-      const updatedGraphArr = [...currentGraphArr, newObject];
-    
-      await updateDoc(subDocRef, { 
-        graphArr: updatedGraphArr,
-        lastConsumptionOfWater: moment(new Date().getTime()).format("h:mm:ss a")
-       }, { merge: true });
+        const usersColRef = collection(db, "users");
+        const parentDocRef = doc(usersColRef, currentUserId);
+        const subColRef = collection(parentDocRef, weekday);
+        const subDocRef = doc(subColRef, "Data");
+
+
+        const docSnapshot = await getDoc(subDocRef);
+        const currentGraphArr = docSnapshot.data()?.graphArr || [];
+
+        const newObject = { value: glass };
+
+        const updatedGraphArr = [...currentGraphArr, newObject];
+
+        await updateDoc(subDocRef, {
+            graphArr: updatedGraphArr,
+            lastConsumptionOfWater: moment(new Date().getTime()).format("hh:mm A"),
+            TodayWaterDrinkingLimit: dailyWaterLimit
+        }, { merge: true });
     }
-    
+
+    const currentTime = moment(new Date().getTime()).format("h:mm:ss a")
+
+    setTimeout(() => {
+        setTime(currentTime)
+    }, 500);
+
+    useEffect(() => {
+        console.log(currentTime)
+    }, [time])
+
+    const toggleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
+
+
     return (
         <View style={styles.container}>
             <Text style={styles.headingTxt}>Add New Entry</Text>
@@ -54,30 +89,49 @@ const NewEntry = () => {
                     <InputButton title={"1"} onPress={() => setGlasses(1)} />
                     <InputButton title={"2"} onPress={() => setGlasses(2)} />
                     <InputButton title={"3"} onPress={() => setGlasses(3)} />
-                    <InputButton title={"4"} onPress={() => setGlasses(4)} />
-                    <InputButton title={"5"} onPress={() => setGlasses(5)} />
                 </View>
             </View>
             <WaterInTakeBtn title={"Confirm"} onPress={() => handleConfirm()} />
+            <View style={{ marginTop: 30 }}></View>
+            <View style={styles.waterConsumptionTime}>
+                <Text style={styles.headingTxt2}>Time of water consumption</Text>
+                <Text style={{ fontSize: 12 }}>{currentTime}</Text>
+            </View>
+            <View style={styles.waterConsumptionTime}>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.headingTxt2}>Set Water Limit</Text>
+                    <TouchableOpacity
+                        onPress={() => toggleModal()}
+                        style={{ position: "absolute", right: -30, backgroundColor: "lightgrey", borderRadius: 30, padding: 2, top: -10 }}>
+                        <MaterialCommunityIcons name="information-variant" size={20} />
+                    </TouchableOpacity>
+                </View>
+                <DropDownPicker
+                    style={{ width: 120, marginTop: 5, backgroundColor: "rgb(203, 241, 250)" }}
+                    open={open}
+                    value={value}
+                    items={items}
+                    setOpen={setOpen}
+                    onChangeValue={(value) => setDailyWaterLimit(value)}
+                    setValue={setValue}
+                    placeholder="Select"
+                    setItems={setItems}
+                    dropDownContainerStyle={{
+                        width: 120,
+                        backgroundColor: "rgb(203, 241, 250)"
+                    }}
+                />
+                <Modal
+                    isVisible={isModalVisible}
+                    onBackdropPress={toggleModal}
+                    style={styles.modal}
+                >
+                    <InfoModal />
+                </Modal>
+            </View>
         </View>
     )
 }
 
+
 export default NewEntry
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    headingTxt: {
-        fontWeight: "800",
-        fontSize: 20,
-        padding: 20
-    },
-    input: {
-        marginBottom: 20,
-        backgroundColor: 'transparent',
-        width: "100%",
-    },
-})

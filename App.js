@@ -3,6 +3,8 @@ import NavContainer from './src/Navigation/NavContainer'
 import { store, persistor } from './src/Redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'
+import Splash from './src/Screens/SplashScreen'
+import LineChartComp from './src/Components/LineChart'
 
 
 const App = () => {
@@ -12,6 +14,7 @@ const App = () => {
         <NavContainer />
       </PersistGate>
     </Provider>
+    // <LineChartComp />
   )
 }
 

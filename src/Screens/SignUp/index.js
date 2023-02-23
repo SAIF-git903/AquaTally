@@ -45,7 +45,6 @@ const SignUp = () => {
                     .then(() => {
                         updateProfile(auth?.currentUser, {
                             displayName: name,
-                            timeStamp: serverTimestamp,
                         })
                         showMessage({
                             message: "Account Created Successfully!",
