@@ -1,25 +1,31 @@
-import { View, Text, StatusBar, Image, Dimensions, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import {
+  View,
+  Text,
+  StatusBar,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native';
+import React, { useState, useEffect } from 'react';
 import logo from "../../assets/images/logo.png";
-import HomePng from "../../assets/images/Home_cont.png";
 import styles from './style';
-import { LineChart } from "react-native-chart-kit";
-import { useSelector, useDispatch } from 'react-redux';
-import waterConsumption from '../../Redux/actions';
+import { useSelector } from 'react-redux';
 import WaterInTakeBtn from '../../Components/Buttons/WaterInTakeBtn';
 import { useNavigation } from '@react-navigation/native';
-import { auth, db } from '../../../firebase';
+import { db } from '../../../firebase';
 import { Avatar } from 'react-native-paper';
-import { collection, setDoc, doc, documentId, getDoc, onSnapshot } from 'firebase/firestore';
-
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { LineChart } from "react-native-gifted-charts";
 
 
 const HomeScreen = () => {
 
-  const dispatch = useDispatch();
   const navigation = useNavigation()
   const displayName = useSelector(state => state?.currentUserName)
-  const [graphArr, setGraphArr] = useState([])
+  const [graphArr, setGraphArr] = useState(null)
+  const [latestConsumption, setLatestConsumption] = useState("")
+
 
   function nameSplitter(name) {
     let splittedName = name.split(" ")
@@ -31,62 +37,44 @@ const HomeScreen = () => {
     return splittings.join("")
   }
 
-  const data = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        data: [3, 4, 6, 7],
-      },
-    ],
-  };
-
-  const chartConfig = {
-    backgroundGradientFrom: "#fff",
-    backgroundGradientTo: "#fff",
-    color: (opacity = 1) => `rgba(12, 175, 255, ${opacity})`,
-    strokeWidth: 2,
-    barPercentage: 0.5,
-    decimalPlaces: 0,
-  };
 
   const currentUserId = useSelector(state => state?.currentUserUid);
 
-  useLayoutEffect(() => {
+  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const today = new Date();
+  const weekday = weekdays[today.getDay()];
 
-    // async function getData() {
-    //   const docRef = doc(db, "users", currentUserId);
-    //   try {
-    //     const docSnap = await getDoc(docRef);
-    //     if (docSnap.exists()) {
-    //       console.log(docSnap.data());
-    //     } else {
-    //       console.log("Document does not exist")
-    //     }
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
 
-    // getData()
+  useEffect(() => {
 
-    const usersColRef = collection(db, 'users');
-    const currentUserDocRef = doc(usersColRef, currentUserId);
+    const usersColRef = collection(db, "users");
+    const parentDocRef = doc(usersColRef, currentUserId);
+    const subColRef = collection(parentDocRef, weekday);
+    const subDocRef = doc(subColRef, "Data");
 
-    onSnapshot(currentUserDocRef, (doc) => {
+    getDoc(subDocRef).then((doc) => {
       if (doc.exists()) {
-        const data = doc.data();
-        const dayOfWeek = new Date().getDay();
-        const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
-        const dayArr = data[dayName] || [];
-
-        // Do something with dayArr
-        console.log(dayArr);
-
+        if (doc.data()) {
+          console.log("Document has fields", doc.data())
+        } else {
+          console.log("There's no such data")
+        }
       }
+    })
+
+    const unsubscribe = onSnapshot(subDocRef, (docSnapshot) => {
+      const currentGraphArr = docSnapshot.data()?.graphArr || [];
+      const lastlyConsumption = docSnapshot.data()?.lastConsumptionOfWater || "";
+      setGraphArr(currentGraphArr)
+      setLatestConsumption(lastlyConsumption)
+      console.log(lastlyConsumption, "lastlyConsumption")
     });
 
-  }, [])
+    return () => {
+      unsubscribe();
+    };
 
+  }, []);
 
   return (
     <>
@@ -103,8 +91,7 @@ const HomeScreen = () => {
                 color: "white",
                 top: 15,
               }}
-            >
-              Water is the most critical resource issue of our lifetime and our
+            >Water is the most critical resource issue of our lifetime and our
               children's lifetime
             </Text>
           </View>
@@ -112,13 +99,22 @@ const HomeScreen = () => {
             <Avatar.Text size={40} label={nameSplitter(displayName)} style={{ backgroundColor: "#007791" }} />
           </TouchableOpacity>
         </View>
-        <LineChart
-          data={data}
-          width={Dimensions.get("window").width}
-          height={220}
-          chartConfig={chartConfig}
-          bezier
-        />
+        <View style={{ marginTop: 15 }}>
+          <Text style={{ fontWeight: "bold", marginBottom: 14 }}>Latest Consumption : {latestConsumption}</Text>
+          <ScrollView
+            horizontal
+          >
+            <LineChart
+              areaChart
+              data={graphArr}
+              startFillColor="rgb(46, 217, 255)"
+              startOpacity={0.6}
+              endFillColor="rgb(203, 241, 250)"
+              endOpacity={0.3}
+              curved
+            />
+          </ScrollView>
+        </View>
       </View>
       <WaterInTakeBtn
         onPress={() => navigation.navigate("NewEntry")}
@@ -127,5 +123,6 @@ const HomeScreen = () => {
     </>
   );
 };
+
 
 export default HomeScreen;
