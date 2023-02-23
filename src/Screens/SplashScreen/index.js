@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View, Image, StatusBar } from 'react-native'
 import React, { useEffect } from 'react'
 import styles from './style'
 import { useNavigation } from '@react-navigation/native'
+import logo from "../../assets/images/logo.png"
 
 
 const Splash = () => {
@@ -16,8 +17,13 @@ const Splash = () => {
 
 
     return (
-        <View style={""}>
-            <Text>Splash</Text>
+        <View style={styles.container}>
+            <StatusBar backgroundColor={"white"} barStyle="dark-content"/>
+            <Text style={styles.splashTxt}>AquaTally</Text>
+            <Image
+                source={logo}
+                style={styles.image}
+            />
         </View>
     )
 }

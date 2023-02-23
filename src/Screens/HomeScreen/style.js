@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        backgroundColor: "white"
     },
     headerStyle: {
         backgroundColor: "#0CAFFF",
@@ -32,6 +31,15 @@ const styles = StyleSheet.create({
         position: "absolute",
         right: 20,
         top: 10,
+    },
+    detailTxt: {
+        fontWeight: "bold",
+        marginLeft: 10,
+        fontSize: 15,
+        color: "black",
+    },
+    infoTxt: {
+        marginTop: 20,
     }
 })
 

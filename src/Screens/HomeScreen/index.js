@@ -5,18 +5,18 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  ScrollView
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import logo from "../../assets/images/logo.png";
-import styles from './style';
 import { useSelector } from 'react-redux';
-import WaterInTakeBtn from '../../Components/Buttons/WaterInTakeBtn';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../../../firebase';
 import { Avatar } from 'react-native-paper';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { LineChart } from "react-native-gifted-charts";
+import styles from './style';
+import WaterInTakeBtn from '../../Components/Buttons/WaterInTakeBtn';
+import logo from "../../assets/images/logo.png";
+import LineChartComp from '../../Components/LineChart';
+import Data from "../../Data/Data.json"
 
 
 const HomeScreen = () => {
@@ -25,7 +25,10 @@ const HomeScreen = () => {
   const displayName = useSelector(state => state?.currentUserName)
   const [graphArr, setGraphArr] = useState(null)
   const [latestConsumption, setLatestConsumption] = useState("")
-
+  const [todayDrinkedGlassesOfWater, setTodayDrinkedGlassesOfWater] = useState("")
+  const [waterLimitInMl, setWaterLimitInMl] = useState("")
+  const [waterLimitInOunces, setWaterLimitInOunces] = useState("")
+  const [waterLimitInGlass, setWaterLimitInGlass] = useState("")
 
   function nameSplitter(name) {
     let splittedName = name.split(" ")
@@ -36,7 +39,6 @@ const HomeScreen = () => {
     })
     return splittings.join("")
   }
-
 
   const currentUserId = useSelector(state => state?.currentUserUid);
 
@@ -67,7 +69,7 @@ const HomeScreen = () => {
       const lastlyConsumption = docSnapshot.data()?.lastConsumptionOfWater || "";
       setGraphArr(currentGraphArr)
       setLatestConsumption(lastlyConsumption)
-      console.log(lastlyConsumption, "lastlyConsumption")
+      setWaterLimitInMl(docSnapshot.data()?.TodayWaterDrinkingLimit)
     });
 
     return () => {
@@ -75,6 +77,34 @@ const HomeScreen = () => {
     };
 
   }, []);
+
+
+  function calculate() {
+    if (graphArr === null) return
+    let sum = 0;
+    for (let i = 0; i < graphArr.length; i++) {
+      if (Number.isInteger(graphArr[i].value)) {
+        sum += graphArr[i].value
+      }
+    }
+    return sum
+  }
+
+  setTimeout(() => {
+    setTodayDrinkedGlassesOfWater(calculate(graphArr))
+  }, 100);
+
+
+  function calculations() {
+    const ouncesOfTodayLimitsWater = 34.48 * `${waterLimitInMl / 1000}`
+    const waterLimitInGlasses = waterLimitInOunces / 8
+    setTimeout(() => {
+      setWaterLimitInOunces(ouncesOfTodayLimitsWater)
+      setWaterLimitInGlass(waterLimitInGlasses)
+    }, 400);
+  }
+
+  calculations()
 
   return (
     <>
@@ -99,27 +129,53 @@ const HomeScreen = () => {
             <Avatar.Text size={40} label={nameSplitter(displayName)} style={{ backgroundColor: "#007791" }} />
           </TouchableOpacity>
         </View>
+
         <View style={{ marginTop: 15 }}>
-          <Text style={{ fontWeight: "bold", marginBottom: 14 }}>Latest Consumption : {latestConsumption}</Text>
-          <ScrollView
-            horizontal
-          >
-            <LineChart
-              areaChart
-              data={graphArr}
-              startFillColor="rgb(46, 217, 255)"
-              startOpacity={0.6}
-              endFillColor="rgb(203, 241, 250)"
-              endOpacity={0.3}
-              curved
-            />
-          </ScrollView>
+          <View style={{ height: 200 }}>
+            <LineChartComp graphArr={graphArr} />
+          </View>
+
+          <View style={styles.infoTxt}>
+            <Text style={styles.detailTxt}>
+              Latest Consumption : <Text style={{ fontSize: 13, color: "grey" }}>{latestConsumption}</Text>
+            </Text>
+            <Text style={styles.detailTxt}>
+              Drinked Glasses : <Text style={{ fontSize: 13, color: "grey" }}>{todayDrinkedGlassesOfWater} glasses</Text>
+            </Text>
+            <Text style={styles.detailTxt}>Today water Limit : <Text style={{ fontSize: 13, color: "grey" }}>{waterLimitInMl} ml</Text></Text>
+          </View>
+
+          <View style={{
+            marginTop: 50,
+            backgroundColor: "lightblue",
+            padding: 10,
+            borderRadius: 10,
+            marginHorizontal: 10
+          }}>
+            <Text style={styles.detailTxt}>
+              1 ounce =
+              <Text style={{ fontFamily: "monospace", fontSize: 13 }}> 29.5735 ml</Text>
+            </Text>
+            <Text style={styles.detailTxt}>
+              1 average glass of water =
+              <Text style={{ fontFamily: "monospace", fontSize: 13 }}> 8 ounces</Text>
+            </Text>
+            <Text style={styles.detailTxt}>
+              Ounces in {waterLimitInMl} liter =
+              <Text style={{ fontFamily: "monospace", fontSize: 13 }}> {Number(waterLimitInOunces).toFixed(2)}</Text>
+            </Text>
+            <Text style={styles.detailTxt}>
+              Average glasses of water to drink =
+              <Text style={{ fontFamily: "monospace", fontSize: 13 }}> {Number(waterLimitInGlass).toFixed(4)}</Text>
+            </Text>
+          </View>
+
         </View>
+        <WaterInTakeBtn
+          onPress={() => navigation.navigate("NewEntry")}
+          title={"Add Entry"}
+        />
       </View>
-      <WaterInTakeBtn
-        onPress={() => navigation.navigate("NewEntry")}
-        title={"Add Entry"}
-      />
     </>
   );
 };
