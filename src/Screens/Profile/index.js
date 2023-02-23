@@ -8,7 +8,6 @@ import { Avatar, Button } from 'react-native-paper';
 import { Svg, Path } from 'react-native-svg';
 
 
-
 const Profile = () => {
 
     const dispatch = useDispatch()

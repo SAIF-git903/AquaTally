@@ -1,61 +1,42 @@
 import { Text, View, StyleSheet } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import React, {  useState } from 'react'
 import { TextInput } from 'react-native-paper';
 import InputButton from '../../Components/InputButton';
 import WaterInTakeBtn from '../../Components/Buttons/WaterInTakeBtn';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db, auth } from '../../../firebase';
+import { doc, getDoc, collection, updateDoc } from 'firebase/firestore';
+import { db} from '../../../firebase';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 
 const NewEntry = () => {
 
     const currentUserId = useSelector(state => state?.currentUserUid)
-    const [glass, setGlasses] = useState("")
+    const [glass, setGlasses] = useState(null)
+
+    const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const today = new Date();
+    const weekday = weekdays[today.getDay()];
 
 
     async function handleConfirm() {
-        const usersColRef = doc(db, 'users', currentUserId);
-
-        try {
-            const docSnap = await getDoc(usersColRef);
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                const dayOfWeek = new Date().getDay();
-                const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
-                const dayArr = data[dayName] || [];
-
-                const updatedDayArr = [...dayArr, ...glass];
-
-                const updateData = {
-                    [dayName]: updatedDayArr,
-                };
-
-                await setDoc(usersColRef, updateData, { merge: true });
-                console.log(usersColRef);
-            } else {
-                const updateData = {
-                    Sunday: [],
-                    Monday: [],
-                    Tuesday: [],
-                    Wednesday: [],
-                    Thursday: [],
-                    Friday: [],
-                    Saturday: [],
-                };
-                
-                await setDoc(usersColRef, updateData, { merge: true });
-                console.log(usersColRef);
-            }
-        } catch (error) {
-            console.error("Error updating document: ", error);
-        }
+      const usersColRef = collection(db, "users");
+      const parentDocRef = doc(usersColRef, currentUserId);
+      const subColRef = collection(parentDocRef, weekday);
+      const subDocRef = doc(subColRef, "Data");
+    
+      const docSnapshot = await getDoc(subDocRef);
+      const currentGraphArr = docSnapshot.data()?.graphArr || [];
+    
+      const newObject = { value: glass };
+      const updatedGraphArr = [...currentGraphArr, newObject];
+    
+      await updateDoc(subDocRef, { 
+        graphArr: updatedGraphArr,
+        lastConsumptionOfWater: moment(new Date().getTime()).format("h:mm:ss a")
+       }, { merge: true });
     }
-
-
-
+    
     return (
         <View style={styles.container}>
             <Text style={styles.headingTxt}>Add New Entry</Text>
@@ -63,17 +44,18 @@ const NewEntry = () => {
                 <TextInput
                     style={styles.input}
                     label="Glasses of water"
-                    value={glass}
+                    value={String(glass)}
                     autoCapitalize={'none'}
                     onChangeText={(text) => setGlasses(text)}
+                    keyboardType="numeric"
                     backgroundColor='transparent'
                 />
                 <View style={{ flexDirection: 'row', flexWrap: "wrap" }}>
-                    <InputButton title={"1"} onPress={() => setGlasses("1")} />
-                    <InputButton title={"2"} onPress={() => setGlasses("2")} />
-                    <InputButton title={"3"} onPress={() => setGlasses("3")} />
-                    <InputButton title={"4"} onPress={() => setGlasses("4")} />
-                    <InputButton title={"5"} onPress={() => setGlasses("5")} />
+                    <InputButton title={"1"} onPress={() => setGlasses(1)} />
+                    <InputButton title={"2"} onPress={() => setGlasses(2)} />
+                    <InputButton title={"3"} onPress={() => setGlasses(3)} />
+                    <InputButton title={"4"} onPress={() => setGlasses(4)} />
+                    <InputButton title={"5"} onPress={() => setGlasses(5)} />
                 </View>
             </View>
             <WaterInTakeBtn title={"Confirm"} onPress={() => handleConfirm()} />
@@ -99,24 +81,3 @@ const styles = StyleSheet.create({
         width: "100%",
     },
 })
-
-
-
- // useLayoutEffect(() => {
-
-    // const usersColRef = collection(db, 'users');
-    // const currentUserDocRef = doc(usersColRef, currentUserId);
-
-    // onSnapshot(currentUserDocRef, (doc) => {
-    //   if (doc.exists()) {
-    //     const data = doc.data();
-    //     const dayOfWeek = new Date().getDay();
-    //     const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
-    //     const dayArr = data[dayName] || [];
-
-    //     console.log(dayArr);
-    //     setGraphArr(dayArr)
-    //   }
-    // });
-
-  // }, [])
