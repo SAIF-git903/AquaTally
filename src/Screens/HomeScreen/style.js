@@ -32,14 +32,15 @@ const styles = StyleSheet.create({
         right: 20,
         top: 10,
     },
-    detailTxt: {
-        fontWeight: "bold",
-        marginLeft: 10,
-        fontSize: 15,
-        color: "black",
-    },
     infoTxt: {
         marginTop: 20,
+    },
+    infoTxt2: {
+        marginTop: 50,
+        backgroundColor: "#B3E5FC",
+        padding: 10,
+        borderRadius: 10,
+        marginHorizontal: 10
     }
 })
 
