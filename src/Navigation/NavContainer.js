@@ -26,7 +26,6 @@ const NavContainer = () => {
                     headerBackVisible: false,
                     headerShown: false,
                 }}>
-                {/* <Stack.Screen name="Splash" component={Splash} /> */}
                 <Stack.Screen name="Login" component={Login} />
                 <Stack.Screen name="SignUp" component={SignUp} />
             </Stack.Navigator>
@@ -47,7 +46,7 @@ const NavContainer = () => {
                     options={{
                         headerShown: true,
                         headerBackVisible: true,
-                        headerTitle: "",
+                        headerTitle: "My Profile",
                     }}
                 />
             </Stack.Navigator>
@@ -62,8 +61,18 @@ const NavContainer = () => {
         )
     }
 
+    const [splash, setSplash] = useState(true)
+
+    setTimeout(() => {
+        setSplash(false)
+    }, 2500);
+
     return (
-        <RootNavigation />
+        <>
+            {
+                splash ? <Splash /> : <RootNavigation />
+            }
+        </>
     )
 }
 

@@ -1,16 +1,15 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../../../firebase';
-import styles from './style';
 import { db } from '../../../firebase';
-import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
-import FlashMessage from 'react-native-flash-message';
 import { showMessage } from "react-native-flash-message";
-
+import FlashMessage from 'react-native-flash-message';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import styles from './style';
 
 
 const SignUp = () => {
@@ -18,23 +17,27 @@ const SignUp = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsloading] = useState(false)
     const navigation = useNavigation()
-    const notifyRef = useRef("myLocalFlashMessage")
+    const ref = useRef("myLocalFlashMessage")
 
 
-    const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const today = new Date();
-    const weekday = weekdays[today.getDay()];
-
+    function getToday() {
+        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const today = new Date();
+        const weekday = weekdays[today.getDay()];
+        return weekday
+    }
 
     const handleSignUp = () => {
+        setIsloading(true)
         createUserWithEmailAndPassword(auth, email, password)
             .then((cred) => {
                 async function handle() {
 
                     const usersColRef = collection(db, "users")
                     const parentDocRef = doc(usersColRef, cred.user.uid);
-                    const subColRef = collection(parentDocRef, weekday);
+                    const subColRef = collection(parentDocRef, getToday());
                     const subDocRef = doc(subColRef, "Data")
 
                     await setDoc(subDocRef, {
@@ -46,6 +49,7 @@ const SignUp = () => {
                         updateProfile(auth?.currentUser, {
                             displayName: name,
                         })
+                        setIsloading(false)
                         showMessage({
                             message: "Account Created Successfully!",
                             description: "Please login again to continue",
@@ -57,13 +61,15 @@ const SignUp = () => {
                         navigation.navigate("Login")
                     })
             }).catch((err) => {
-                console.log(err, "ddddddddddddddddd")
+                setIsloading(false)
+                console.log(err.code, "ddddddddddddddddd")
                 switch (err.code) {
                     case "auth/invalid-email":
                         showMessage({
                             message: "Invalid Email",
                             description: "Please try checking your email address.",
                             backgroundColor: "red",
+                            type: "warning",
                             color: "white",
                             position: "center"
                         });
@@ -76,8 +82,6 @@ const SignUp = () => {
                             color: "white",
                             position: "center"
                         });
-                    default:
-                        break;
                 }
             })
     };
@@ -85,7 +89,7 @@ const SignUp = () => {
 
     return (
         <>
-            <View style={styles.container}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
                 <View style={{ marginLeft: 40, marginBottom: 50 }}>
                     <Text style={styles.title}>Create</Text>
                     <Text style={styles.title}>your account</Text>
@@ -131,6 +135,7 @@ const SignUp = () => {
                             mode="contained"
                             buttonColor='#0CAFFF'
                             onPress={handleSignUp}
+                            loading={isLoading}
                             labelStyle={styles.buttonText}>
                             Create Account
                         </Button>
@@ -142,8 +147,8 @@ const SignUp = () => {
                         </View>
                     </View>
                 </View>
-                <FlashMessage ref={notifyRef} position="top" duration={2400} />
-            </View>
+                <FlashMessage ref={ref} position="top" duration={2500} />
+            </KeyboardAvoidingView>
         </>
     );
 };

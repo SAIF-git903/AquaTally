@@ -15,15 +15,13 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         backgroundColor: "transparent",
         padding: 10,
-        width: 300
+        width: 300,
     },
     waterConsumptionTime: {
-        marginTop: 10,
-        backgroundColor: "rgb(203, 241, 250)",
+        backgroundColor: "#B3E5FC",
         paddingVertical: 20,
         paddingHorizontal: 40,
         borderRadius: 10,
-        width: "80%"
     },
     headingTxt2: {
         fontWeight: "bold",
@@ -34,6 +32,20 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         margin: 0,
     },
+    box_shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 10,
+        },
+        shadowOpacity: 0.53,
+        shadowRadius: 13.97,
+
+        elevation: 10,
+        width: "80%",
+        marginVertical: 10,
+        borderRadius: 10
+    }
 })
 
 export default styles
