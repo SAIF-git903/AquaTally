@@ -45,9 +45,9 @@ const Profile = () => {
                 <Button mode="contained" onPress={handleLogOut} style={styles.logoutButton}>
                     Logout
                 </Button>
-                <Button mode="outlined" onPress={() => { "" }} style={styles.signInButton}>
+                {/* <Button mode="outlined" onPress={() => { "" }} style={styles.signInButton}>
                     Sign in another account
-                </Button>
+                </Button> */}
             </View>
         </View>
     )

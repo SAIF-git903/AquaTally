@@ -16,7 +16,6 @@ import styles from './style';
 import WaterInTakeBtn from '../../Components/Buttons/WaterInTakeBtn';
 import logo from "../../assets/images/logo.png";
 import LineChartComp from '../../Components/LineChart';
-import Data from "../../Data/Data.json"
 
 
 const HomeScreen = () => {
@@ -125,16 +124,15 @@ const HomeScreen = () => {
               children's lifetime
             </Text>
           </View>
-          <TouchableOpacity style={styles.userNameTxt} onPress={() => navigation.navigate("Profile")}>
-            <Avatar.Text size={40} label={nameSplitter(displayName)} style={{ backgroundColor: "#007791" }} />
+          <TouchableOpacity style={styles.userNameTxt}
+            onPress={() => navigation.navigate("Profile")}>
+            <Avatar.Text size={40} label={nameSplitter(displayName)} style={{ backgroundColor: "#003366" }} />
           </TouchableOpacity>
         </View>
-
         <View style={{ marginTop: 15 }}>
           <View style={{ height: 200 }}>
             <LineChartComp graphArr={graphArr} />
           </View>
-
           <View style={styles.infoTxt}>
             <Text style={styles.detailTxt}>
               Latest Consumption : <Text style={{ fontSize: 13, color: "grey" }}>{latestConsumption}</Text>
@@ -144,10 +142,9 @@ const HomeScreen = () => {
             </Text>
             <Text style={styles.detailTxt}>Today water Limit : <Text style={{ fontSize: 13, color: "grey" }}>{waterLimitInMl} ml</Text></Text>
           </View>
-
           <View style={{
             marginTop: 50,
-            backgroundColor: "lightblue",
+            backgroundColor: "#B3E5FC",
             padding: 10,
             borderRadius: 10,
             marginHorizontal: 10
@@ -169,7 +166,6 @@ const HomeScreen = () => {
               <Text style={{ fontFamily: "monospace", fontSize: 13 }}> {Number(waterLimitInGlass).toFixed(4)}</Text>
             </Text>
           </View>
-
         </View>
         <WaterInTakeBtn
           onPress={() => navigation.navigate("NewEntry")}
