@@ -6,10 +6,10 @@ import { auth } from '../../../firebase';
 import { useNavigation } from '@react-navigation/native';
 import { currentUserUid, userLoggingIn, currentUserName, currentUserEmail } from '../../Redux/actions';
 import { useDispatch } from 'react-redux';
+import { showMessage } from "react-native-flash-message";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './style';
 import FlashMessage from 'react-native-flash-message';
-import { showMessage, hideMessage } from "react-native-flash-message";
 
 
 const Login = () => {
@@ -36,7 +36,6 @@ const Login = () => {
                 setIsBtnClicking(false);
             })
             .catch((err) => {
-                console.log(err, "in line no 39");
                 console.log(err.code, "...........")
                 switch (err.code) {
                     case "auth/wrong-password":
@@ -53,11 +52,9 @@ const Login = () => {
                             type: "default",
                             backgroundColor: "red",
                             color: "white",
-                            position: "center"
                         });
                         break
                     case "auth/too-many-requests":
-                        console.log("Too many requests")
                         showMessage({
                             message: "Too many requests",
                             description: "Access to this account has been temporarily disabled due to many failed login attempts. You can try again later",
@@ -67,7 +64,6 @@ const Login = () => {
                         });
                         break
                     case "auth/network-request-failed":
-                        console.log("Network request failed")
                         showMessage({
                             message: "Network Request Failed",
                             description: "Network Error. Please try checking your internet connection",
@@ -144,17 +140,3 @@ const Login = () => {
 
 
 export default Login;
-
-
-
-// const usersColRef = collection(db, "users")
-
-// const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-// daysOfWeek.forEach(async (day) => {
-//     try {
-//         const newDocRef = await addDoc(collection(usersColRef, day))
-//         console.log(`Added document with ID ${newDocRef.id} to ${day} collection`);
-//     } catch (e) {
-//         console.error(`Error adding document to ${day} collection: ${e}`);
-//     }
-// });
