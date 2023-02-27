@@ -3,7 +3,8 @@ import {
     USER_LOGGING_OUT,
     CURRENT_USER_UID,
     CURRENT_USER_NAME,
-    CURRENT_USER_EMAIL
+    CURRENT_USER_EMAIL,
+    DATA_FOR_TODAY_CREATED
 } from "./constants";
 
 
@@ -11,7 +12,8 @@ const initalState = {
     token: null,
     currentUserUid: null,
     currentUserName: null,
-    currentUserEmail: null
+    currentUserEmail: null,
+    dataForToday: null
 }
 
 const reducer = (state = initalState, { type, payload }) => {

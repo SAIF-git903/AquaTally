@@ -3,7 +3,7 @@ import NavContainer from './src/Navigation/NavContainer'
 import { store, persistor } from './src/Redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'
-
+import AnimatedSearchBar from './src/Components/AnimatedSearchBar'
 
 const App = () => {
 
@@ -13,6 +13,7 @@ const App = () => {
         <NavContainer />
       </PersistGate>
     </Provider>
+    // <AnimatedSearchBar />
   )
 }
 

@@ -1,4 +1,11 @@
-import { USER_LOGGING_IN, USER_LOGGING_OUT, CURRENT_USER_UID , CURRENT_USER_NAME, CURRENT_USER_EMAIL} from "./constants";
+import {
+    USER_LOGGING_IN,
+    USER_LOGGING_OUT,
+    CURRENT_USER_UID,
+    CURRENT_USER_NAME,
+    CURRENT_USER_EMAIL,
+    DATA_FOR_TODAY_CREATED
+} from "./constants";
 
 export const userLoggingIn = (token) => ({
     type: USER_LOGGING_IN,
