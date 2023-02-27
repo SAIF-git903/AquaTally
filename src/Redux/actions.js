@@ -1,4 +1,11 @@
-import { USER_LOGGING_IN, USER_LOGGING_OUT, CURRENT_USER_UID , CURRENT_USER_NAME, CURRENT_USER_EMAIL} from "./constants";
+import {
+    USER_LOGGING_IN,
+    USER_LOGGING_OUT,
+    CURRENT_USER_UID,
+    CURRENT_USER_NAME,
+    CURRENT_USER_EMAIL,
+    CURRENT_USER_AUTH
+} from "./constants";
 
 export const userLoggingIn = (token) => ({
     type: USER_LOGGING_IN,
@@ -23,3 +30,9 @@ export const currentUserEmail = (email) => ({
     type: CURRENT_USER_EMAIL,
     payload: email
 })
+
+export const authCurrentUser = (auth_currentUser) => ({
+    type: CURRENT_USER_AUTH,
+    payload: auth_currentUser
+})
+

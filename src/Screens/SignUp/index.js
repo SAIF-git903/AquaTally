@@ -10,6 +10,8 @@ import { showMessage } from "react-native-flash-message";
 import FlashMessage from 'react-native-flash-message';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './style';
+import { useDispatch } from 'react-redux';
+import { authCurrentUser } from '../../Redux/actions';
 
 
 const SignUp = () => {
@@ -20,29 +22,18 @@ const SignUp = () => {
     const [isLoading, setIsloading] = useState(false)
     const navigation = useNavigation()
     const ref = useRef("myLocalFlashMessage")
+    const dispatch = useDispatch()
 
-
-    function getToday() {
-        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const today = new Date();
-        const weekday = weekdays[today.getDay()];
-        return weekday
-    }
 
     const handleSignUp = () => {
         setIsloading(true)
         createUserWithEmailAndPassword(auth, email, password)
             .then((cred) => {
                 async function handle() {
-
                     const usersColRef = collection(db, "users")
                     const parentDocRef = doc(usersColRef, cred.user.uid);
-                    const subColRef = collection(parentDocRef, getToday());
-                    const subDocRef = doc(subColRef, "Data")
-
-                    await setDoc(subDocRef, {
-                        graphArr: []
-                    })
+                    await setDoc(parentDocRef, {})
+                    dispatch(authCurrentUser(auth.currentUser))
                 }
                 handle()
                     .then(() => {

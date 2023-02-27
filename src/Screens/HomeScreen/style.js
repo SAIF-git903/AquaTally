@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     },
     headerStyle: {
         backgroundColor: "#0CAFFF",
-        height: 150,
+        height: 190,
         width: "100%",
         borderBottomLeftRadius: 25,
         borderBottomRightRadius: 25,
@@ -36,11 +36,33 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     infoTxt2: {
-        marginTop: 50,
-        backgroundColor: "#B3E5FC",
+        marginTop: 15
+    },
+    plusView: {
+        alignItems: "center",
+        position: "absolute",
+        bottom: 5,
+    },
+    plusIcon: {
+        backgroundColor: "#0CAFFF",
         padding: 10,
-        borderRadius: 10,
-        marginHorizontal: 10
+        borderRadius: 30,
+        marginBottom: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.32,
+        shadowRadius: 5.46,
+        elevation: 9,
+    },
+    moreInfoTxt: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: "black",
+        marginBottom: 5,
+        textDecorationLine: "underline",
     }
 })
 

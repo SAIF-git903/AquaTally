@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableWithoutFeedback, StatusBar } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, StatusBar, TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import { signInWithEmailAndPassword } from "firebase/auth"
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth"
 import { auth } from '../../../firebase';
 import { useNavigation } from '@react-navigation/native';
 import { currentUserUid, userLoggingIn, currentUserName, currentUserEmail } from '../../Redux/actions';
@@ -38,6 +38,16 @@ const Login = () => {
             .catch((err) => {
                 console.log(err.code, "...........")
                 switch (err.code) {
+                    case "auth/invalid-email":
+                        showMessage({
+                            message: "Invalid Email",
+                            description: "Please try checking your email address.",
+                            backgroundColor: "red",
+                            type: "warning",
+                            color: "white",
+                            position: "center"
+                        });
+                        break;
                     case "auth/wrong-password":
                         showMessage({
                             message: "Wrong password",
@@ -113,6 +123,9 @@ const Login = () => {
                         />
                     </TouchableWithoutFeedback>
                 </View>
+                <TouchableOpacity style={{ alignSelf: "flex-end" }} onPress={() => navigation.navigate("ForgotPassword")}>
+                    <Text style={{ color: "#0CAFFF", fontWeight: "bold" }}>Forgotten password?</Text>
+                </TouchableOpacity>
                 <Button
                     style={styles.button}
                     mode="contained"

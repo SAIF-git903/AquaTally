@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import 'react-native-gesture-handler';
+import React from 'react'
 import NavContainer from './src/Navigation/NavContainer'
 import { store, persistor } from './src/Redux/store'
 import { PersistGate } from 'redux-persist/integration/react'

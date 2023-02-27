@@ -1,9 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import { TextInput } from 'react-native-paper';
-import { doc, getDoc, collection, updateDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, collection, updateDoc, setDoc, onSnapshot, getDocFromCache } from 'firebase/firestore';
 import { db } from '../../../firebase';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import InputButton from '../../Components/InputButton';
 import WaterInTakeBtn from '../../Components/Buttons/WaterInTakeBtn';
 import moment from 'moment';
@@ -12,6 +12,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Modal from 'react-native-modal';
 import InfoModal from '../../Components/InfoModal';
 import styles from './style';
+import { dataForTodayCreated } from '../../Redux/actions';
+
 
 
 const NewEntry = () => {
@@ -25,11 +27,11 @@ const NewEntry = () => {
     const [dailyWaterLimit, setDailyWaterLimit] = useState("")
     const [isTodaysLimitSet, setIsTodaysLimitSet] = useState(false)
     const [items, setItems] = useState([
-        { label: '1 liter', value: '1000' },
         { label: '1.5 liter', value: '1500' },
         { label: '2 liter', value: '2000' },
         { label: '2.5 liter', value: '2500' },
         { label: '3 liter', value: '3000' },
+        { label: '3.5 liter', value: '3500' },
     ]);
 
     const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -38,7 +40,6 @@ const NewEntry = () => {
 
 
     async function handleConfirm() {
-
         const usersColRef = collection(db, "users");
         const parentDocRef = doc(usersColRef, currentUserId);
         const subColRef = collection(parentDocRef, weekday);
@@ -80,7 +81,6 @@ const NewEntry = () => {
         setIsModalVisible(!isModalVisible);
     };
 
-
     useLayoutEffect(() => {
         const usersColRef = collection(db, "users");
         const parentDocRef = doc(usersColRef, currentUserId);
@@ -88,16 +88,14 @@ const NewEntry = () => {
         const subDocRef = doc(subColRef, "Data");
 
         onSnapshot(subDocRef, (snapShot) => {
-            if (snapShot.data().TodayWaterDrinkingLimit) {
+            if (snapShot.data()?.TodayWaterDrinkingLimit) {
                 setIsTodaysLimitSet(true)
             }
         })
-
     }, [])
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headingTxt}>Add New Entry</Text>
             <View style={{ marginHorizontal: 20 }}>
                 <TextInput
                     style={styles.input}
