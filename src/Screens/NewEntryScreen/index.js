@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import { TextInput } from 'react-native-paper';
-import { doc, getDoc, collection, updateDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, collection, updateDoc, setDoc, onSnapshot, getDocFromCache } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import InputButton from '../../Components/InputButton';
@@ -81,7 +81,6 @@ const NewEntry = () => {
         setIsModalVisible(!isModalVisible);
     };
 
-
     useLayoutEffect(() => {
         const usersColRef = collection(db, "users");
         const parentDocRef = doc(usersColRef, currentUserId);
@@ -93,12 +92,10 @@ const NewEntry = () => {
                 setIsTodaysLimitSet(true)
             }
         })
-
     }, [])
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headingTxt}>Add New Entry</Text>
             <View style={{ marginHorizontal: 20 }}>
                 <TextInput
                     style={styles.input}

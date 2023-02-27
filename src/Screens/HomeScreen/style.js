@@ -36,11 +36,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     infoTxt2: {
-        marginTop: 50,
-        backgroundColor: "#B3E5FC",
-        padding: 10,
-        borderRadius: 10,
-        marginHorizontal: 10
+        marginTop: 15
     },
     plusView: {
         alignItems: "center",
@@ -61,6 +57,13 @@ const styles = StyleSheet.create({
         shadowRadius: 5.46,
         elevation: 9,
     },
+    moreInfoTxt: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: "black",
+        marginBottom: 5,
+        textDecorationLine: "underline",
+    }
 })
 
 export default styles

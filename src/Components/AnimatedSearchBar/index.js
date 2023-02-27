@@ -3,10 +3,9 @@ import { View, TextInput, TouchableOpacity, Animated, TouchableWithoutFeedback, 
 import Feather from 'react-native-vector-icons/Feather';
 
 
-const AnimatedSearchBar = () => {
+const AnimatedSearchBar = ({ searchText, setSearchText, onSearchSubmit }) => {
 
     const [searchBarFocused, setSearchBarFocused] = useState(false);
-    const [searchText, setSearchText] = useState('');
     const [shadow, setShadow] = useState(false)
 
     const searchWidth = useRef(new Animated.Value(0)).current;
@@ -78,8 +77,9 @@ const AnimatedSearchBar = () => {
                         value={searchText}
                         onFocus={() => setShadow(true)}
                         onBlur={onBlur}
-                        placeholder="Search"
+                        placeholder="Search History e.g 'Friday'"
                         ref={searchBarRef}
+                        onSubmitEditing={() => onSearchSubmit()}
                     />
                 </Animated.View>
                 <TouchableOpacity onPress={onFocus} onBlur={onBlur}>
