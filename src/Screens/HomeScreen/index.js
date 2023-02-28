@@ -28,7 +28,7 @@ import logo from "../../assets/images/logo.png";
 import no_internet from "../../assets/images/no_internet.png"
 import nothing_to_show from "../../assets/images/nothing_to_show.png"
 import styles from './style';
-import DrawerComp from '../../Components/Drawer';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 
 const HomeScreen = () => {
@@ -76,7 +76,6 @@ const HomeScreen = () => {
             case "unavailable":
               console.log("You does not seem to have internet")
               setIsConnectionAvailable(false)
-              return false
           }
         }
       }
@@ -196,7 +195,6 @@ const HomeScreen = () => {
     }, 2000);
   }, []);
 
-  console.log(auth.currentUser)
 
   return (
     <>
@@ -223,9 +221,7 @@ const HomeScreen = () => {
           </View>
           <TouchableOpacity style={styles.userNameTxt}
             onPress={() => navigation.openDrawer()}>
-            <Avatar.Text size={40}
-              label={nameSplitter(displayName)}
-              style={{ backgroundColor: "white" }} />
+            <MaterialCommunityIcons size={30} color="white" name="menu" />
           </TouchableOpacity>
         </View>
         {
@@ -289,3 +285,6 @@ const HomeScreen = () => {
 
 
 export default HomeScreen;
+
+// 1_Fixed current_auth_user
+// 2_Added custom_drawer

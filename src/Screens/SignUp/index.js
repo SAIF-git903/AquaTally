@@ -1,13 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {
+    createUserWithEmailAndPassword,
+    updateProfile,
+} from 'firebase/auth';
 import { auth } from '../../../firebase';
 import { db } from '../../../firebase';
 import { collection, doc, setDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { showMessage } from "react-native-flash-message";
-import FlashMessage from 'react-native-flash-message';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './style';
 import { useDispatch } from 'react-redux';
@@ -138,7 +140,6 @@ const SignUp = () => {
                         </View>
                     </View>
                 </View>
-                <FlashMessage ref={ref} position="top" duration={2500} />
             </KeyboardAvoidingView>
         </>
     );

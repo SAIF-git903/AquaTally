@@ -1,5 +1,6 @@
+import { View } from 'react-native'
 import React, { useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, NavigationContainerRefContext } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { useSelector } from 'react-redux'
@@ -10,6 +11,9 @@ import SignUp from '../Screens/SignUp'
 import ForgotPassword from '../Screens/ForgotPassword'
 import Profile from '../Screens/Profile'
 import Splash from '../Screens/SplashScreen'
+import FlashMessage from 'react-native-flash-message'
+import CustomSidebarMenu from '../Screens/CustomDrawer'
+import FontAwesome from "react-native-vector-icons/FontAwesome"
 
 
 const NavContainer = () => {
@@ -19,34 +23,65 @@ const NavContainer = () => {
     const Stack = createNativeStackNavigator()
     const Drawer = createDrawerNavigator()
 
+
     const AuthStack = () => {
         return (
-            <Stack.Navigator
-                screenOptions={{
-                    headerBackVisible: false,
-                    headerShown: false,
-                }}>
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="SignUp" component={SignUp} />
-                <Stack.Screen name="ForgotPassword" component={ForgotPassword}
-                    options={{
-                        headerBackVisible: true,
-                        headerShown: true,
-                        headerTitle: ""
-                    }}
-                />
-            </Stack.Navigator>
+            <View style={{ flex: 1 }}>
+                <Stack.Navigator
+                    screenOptions={{
+                        headerBackVisible: false,
+                        headerShown: false,
+                    }}>
+                    <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="SignUp" component={SignUp} />
+                    <Stack.Screen name="ForgotPassword" component={ForgotPassword}
+                        options={{
+                            headerBackVisible: true,
+                            headerShown: true,
+                            headerTitle: ""
+                        }}
+                    />
+                </Stack.Navigator>
+                <FlashMessage position="top" duration={2500} />
+            </View>
         );
     };
 
 
     const DrawerStack = () => {
         return (
-            <Drawer.Navigator screenOptions={{ headerShown: false, drawerPosition: "right" }}>
-                <Drawer.Screen name='Home' component={HomeScreen} />
+            <Drawer.Navigator
+                screenOptions={{
+                    headerShown: false,
+                    drawerPosition: "right",
+                    drawerActiveBackgroundColor: "transparent",
+                    drawerActiveTintColor: "#0CAFFF",
+                    drawerItemStyle: {
+                        borderBottomColor: "black",
+                        borderBottomWidth: 1,
+                        marginHorizontal: 20
+                    },
+                    drawerType: "back"
+                }}
+                drawerContent={props => <CustomSidebarMenu {...props} />}>
+                <Drawer.Screen name='Home' component={HomeScreen}
+                    options={{
+                        drawerIcon: ({ color, size }) => (
+                            <FontAwesome name="home" color={color} size={size} />
+                        ),
+                    }}
+                />
                 <Drawer.Screen name='Profile' component={Profile}
                     options={{
                         headerShown: true,
+                        headerTitleAlign: "center",
+                        headerTintColor: "white",
+                        headerStyle: {
+                            backgroundColor: "#0CAFFF",
+                        },
+                        drawerIcon: ({ color, size }) => (
+                            <FontAwesome name="user" color={color} size={size} />
+                        ),
                     }}
                 />
             </Drawer.Navigator>
@@ -59,7 +94,6 @@ const NavContainer = () => {
                 screenOptions={{
                     headerBackVisible: false,
                     headerShown: false,
-
                 }}>
                 <Stack.Screen name="Drawer" component={DrawerStack} />
                 <Stack.Screen name="NewEntry" component={NewEntry}
@@ -87,7 +121,7 @@ const NavContainer = () => {
     setTimeout(() => {
         setSplash(false)
     }, 2500)
-    
+
 
     return (
         <>
