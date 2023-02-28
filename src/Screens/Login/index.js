@@ -1,7 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableWithoutFeedback, StatusBar, TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth"
+import {
+    onAuthStateChanged,
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword,
+    setPersistence,
+    browserSessionPersistence,
+    browserLocalPersistence,
+} from "firebase/auth"
 import { auth } from '../../../firebase';
 import { useNavigation } from '@react-navigation/native';
 import { currentUserUid, userLoggingIn, currentUserName, currentUserEmail } from '../../Redux/actions';
@@ -9,7 +16,6 @@ import { useDispatch } from 'react-redux';
 import { showMessage } from "react-native-flash-message";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './style';
-import FlashMessage from 'react-native-flash-message';
 
 
 const Login = () => {
@@ -23,17 +29,18 @@ const Login = () => {
     const ref = useRef("myLocalFlashMessage")
 
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         setIsBtnClicking(true);
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                console.log(user.uid, "In login Screen");
+                console.log(user, "In login Screen");
                 dispatch(currentUserUid(user.uid));
                 dispatch(currentUserName(user.displayName));
                 dispatch(currentUserEmail(user.email));
                 dispatch(userLoggingIn("@userLoggedIn"));
                 setIsBtnClicking(false);
+                console.log("User logged in successfull")
             })
             .catch((err) => {
                 console.log(err.code, "...........")
@@ -146,7 +153,6 @@ const Login = () => {
                     <Text style={styles.footerLink}>Sign up</Text>
                 </TouchableWithoutFeedback>
             </View>
-            <FlashMessage ref={ref} position="top" duration={2500} />
         </View>
     );
 };
