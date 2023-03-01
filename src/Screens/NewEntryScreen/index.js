@@ -1,9 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import { TextInput } from 'react-native-paper';
-import { doc, getDoc, collection, updateDoc, setDoc, onSnapshot, getDocFromCache } from 'firebase/firestore';
+import { doc, getDoc, collection, updateDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../firebase';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import InputButton from '../../Components/InputButton';
 import WaterInTakeBtn from '../../Components/Buttons/WaterInTakeBtn';
 import moment from 'moment';
@@ -12,13 +12,11 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Modal from 'react-native-modal';
 import InfoModal from '../../Components/InfoModal';
 import styles from './style';
-import { dataForTodayCreated } from '../../Redux/actions';
-
 
 
 const NewEntry = () => {
 
-    const currentUserId = useSelector(state => state?.currentUserUid)
+    const currentUser = useSelector(state => state?.currentUserAuth?.currentUser?.uid)
     const [glass, setGlasses] = useState("")
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [time, setTime] = useState("")
@@ -41,7 +39,7 @@ const NewEntry = () => {
 
     async function handleConfirm() {
         const usersColRef = collection(db, "users");
-        const parentDocRef = doc(usersColRef, currentUserId);
+        const parentDocRef = doc(usersColRef, currentUser);
         const subColRef = collection(parentDocRef, weekday);
         const subDocRef = doc(subColRef, "Data");
 
@@ -83,7 +81,7 @@ const NewEntry = () => {
 
     useLayoutEffect(() => {
         const usersColRef = collection(db, "users");
-        const parentDocRef = doc(usersColRef, currentUserId);
+        const parentDocRef = doc(usersColRef, currentUser);
         const subColRef = collection(parentDocRef, weekday);
         const subDocRef = doc(subColRef, "Data");
 
