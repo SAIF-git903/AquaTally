@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 import React, { useState } from 'react'
-import { NavigationContainer, NavigationContainerRefContext } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { useSelector } from 'react-redux'
