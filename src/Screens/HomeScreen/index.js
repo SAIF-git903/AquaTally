@@ -5,7 +5,6 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  TextInput,
   ScrollView,
   ActivityIndicator,
   RefreshControl
@@ -13,10 +12,8 @@ import {
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-import { auth, db } from '../../../firebase';
-import { Avatar } from 'react-native-paper';
+import { db } from '../../../firebase';
 import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { Drawer } from 'react-native-paper';
 import Feather from "react-native-vector-icons/Feather"
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import LineChartComp from '../../Components/LineChart';
@@ -34,8 +31,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 const HomeScreen = () => {
 
   const navigation = useNavigation()
-  const displayName = useSelector(state => state?.currentUserName)
-  const currentUserId = useSelector(state => state?.currentUserUid);
+  const currentUser = useSelector(state => state?.currentUserAuth.currentUser.uid);
   const [graphArr, setGraphArr] = useState(null)
   const [latestConsumption, setLatestConsumption] = useState("")
   const [todayDrinkedGlassesOfWater, setTodayDrinkedGlassesOfWater] = useState("")
@@ -51,7 +47,6 @@ const HomeScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [isSearching, setIsSearching] = useState(false)
   const ref = useRef("myLocalFlashMessage")
-  const [active, setActive] = React.useState('');
 
 
   useLayoutEffect(() => {
@@ -59,7 +54,7 @@ const HomeScreen = () => {
       async function getDataDetails() {
         try {
           const usersColRef = collection(db, "users");
-          const parentDocRef = doc(usersColRef, currentUserId);
+          const parentDocRef = doc(usersColRef, currentUser);
           const subColRef = collection(parentDocRef, getToday());
           const subDocRef = doc(subColRef, "Data");
           const docSnap = await getDoc(subDocRef);
@@ -87,7 +82,7 @@ const HomeScreen = () => {
   function getData() {
 
     const usersColRef = collection(db, "users");
-    const parentDocRef = doc(usersColRef, currentUserId);
+    const parentDocRef = doc(usersColRef, currentUser);
     const subColRef = collection(parentDocRef, getToday());
     const subDocRef = doc(subColRef, "Data");
 
@@ -134,16 +129,6 @@ const HomeScreen = () => {
     return sum
   }
 
-  function nameSplitter(name) {
-    let splittedName = name.split(" ")
-    let splittings = []
-    splittedName.forEach((item) => {
-      let itemN = item.split("")
-      splittings.push(itemN[0])
-    })
-    return splittings.join("")
-  }
-
 
   function getToday() {
     const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -157,7 +142,7 @@ const HomeScreen = () => {
     console.log("Search")
     try {
       const usersColRef = collection(db, "users");
-      const parentDocRef = doc(usersColRef, currentUserId);
+      const parentDocRef = doc(usersColRef, currentUser);
       const subColRef = collection(parentDocRef, searchText);
       const subDocRef = doc(subColRef, "Data");
 
@@ -285,6 +270,3 @@ const HomeScreen = () => {
 
 
 export default HomeScreen;
-
-// 1_Fixed current_auth_user
-// 2_Added custom_drawer
