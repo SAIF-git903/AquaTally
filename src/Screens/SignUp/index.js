@@ -1,10 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TouchableWithoutFeedback, KeyboardAvoidingView } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import {
-    createUserWithEmailAndPassword,
-    updateProfile,
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../../../firebase';
 import { db } from '../../../firebase';
 import { collection, doc, setDoc } from 'firebase/firestore';
@@ -12,19 +9,16 @@ import { useNavigation } from '@react-navigation/native';
 import { showMessage } from "react-native-flash-message";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './style';
-import { useDispatch } from 'react-redux';
-import { authCurrentUser } from '../../Redux/actions';
 
 
 const SignUp = () => {
+
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsloading] = useState(false)
     const navigation = useNavigation()
-    const ref = useRef("myLocalFlashMessage")
-    const dispatch = useDispatch()
 
 
     const handleSignUp = () => {
@@ -35,7 +29,6 @@ const SignUp = () => {
                     const usersColRef = collection(db, "users")
                     const parentDocRef = doc(usersColRef, cred.user.uid);
                     await setDoc(parentDocRef, {})
-                    dispatch(authCurrentUser(auth.currentUser))
                 }
                 handle()
                     .then(() => {
