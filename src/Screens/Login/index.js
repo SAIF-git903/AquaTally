@@ -1,17 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableWithoutFeedback, StatusBar, TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import {
-    onAuthStateChanged,
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    setPersistence,
-    browserSessionPersistence,
-    browserLocalPersistence,
-} from "firebase/auth"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth } from '../../../firebase';
 import { useNavigation } from '@react-navigation/native';
-import { currentUserUid, userLoggingIn, currentUserName, currentUserEmail } from '../../Redux/actions';
+import { userLoggingIn, authCurrentUser } from '../../Redux/actions';
 import { useDispatch } from 'react-redux';
 import { showMessage } from "react-native-flash-message";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -26,7 +19,6 @@ const Login = () => {
     const [isBtnClicking, setIsBtnClicking] = useState(false)
     const navigation = useNavigation()
     const dispatch = useDispatch()
-    const ref = useRef("myLocalFlashMessage")
 
 
     const handleLogin = async () => {
@@ -35,9 +27,7 @@ const Login = () => {
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user, "In login Screen");
-                dispatch(currentUserUid(user.uid));
-                dispatch(currentUserName(user.displayName));
-                dispatch(currentUserEmail(user.email));
+                dispatch(authCurrentUser(auth))
                 dispatch(userLoggingIn("@userLoggedIn"));
                 setIsBtnClicking(false);
                 console.log("User logged in successfull")
