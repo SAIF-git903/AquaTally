@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     SafeAreaView,
-    StyleSheet,
     Image,
     Text,
     TouchableOpacity
@@ -13,12 +12,13 @@ import { useDispatch } from 'react-redux';
 import { userLoggingOut } from '../../Redux/actions';
 import logo from "../../assets/images/logo.png"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import styles from './style';
 
 
 const CustomSidebarMenu = (props) => {
-
+    
     const dispatch = useDispatch()
-
+    
     function handleLogOut() {
         console.log("Clicking")
         signOut(auth).then(() => {
@@ -45,27 +45,5 @@ const CustomSidebarMenu = (props) => {
         </SafeAreaView>
     );
 };
-
-
-const styles = StyleSheet.create({
-    sideMenuProfileIcon: {
-        resizeMode: 'center',
-        width: 60,
-        height: 60,
-        margin: 15,
-        alignSelf: 'center',
-    },
-    logoutTxt: {
-        marginTop: 3,
-        marginLeft: 10,
-        fontWeight: "bold",
-        color: "black"
-    },
-    touchLogOut: {
-        marginLeft: 40,
-        marginBottom: 10,
-        flexDirection: "row"
-    }
-});
 
 export default CustomSidebarMenu;

@@ -1,15 +1,8 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, Image } from 'react-native'
 import React from 'react'
 
 
 const NothingHere = ({ nothingToShowImg, txt }) => {
-
-    function getToday() {
-        const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const today = new Date();
-        const weekday = weekdays[today.getDay()];
-        return weekday
-    }
 
     return (
         <>

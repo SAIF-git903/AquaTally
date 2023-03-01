@@ -17,15 +17,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#777'
     },
-    buttonContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        marginBottom: 10
-    },
-    signInButton: {
-        borderRadius: 10,
-        marginHorizontal: 20
-    },
     svg: {
         position: 'absolute',
         top: 0,

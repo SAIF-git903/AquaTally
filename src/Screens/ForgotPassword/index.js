@@ -1,9 +1,9 @@
+import React, { useState } from 'react'
 import { Text, View } from 'react-native'
-import React, { useState, useRef } from 'react'
-import styles from './style'
-import { confirmPasswordReset, sendPasswordResetEmail } from 'firebase/auth'
+import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '../../../firebase'
 import { TextInput, Button } from "react-native-paper"
+import styles from './style'
 
 
 const ForgotPassword = () => {
