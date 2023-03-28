@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
-import { TextInput } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import { doc, getDoc, collection, updateDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { useSelector } from 'react-redux';
@@ -12,11 +12,14 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Modal from 'react-native-modal';
 import InfoModal from '../../Components/InfoModal';
 import styles from './style';
+import DatePicker from "react-native-date-picker"
+import Notification from '../../../Notifications';
 
 
 const NewEntry = () => {
 
     const currentUser = useSelector(state => state?.currentUserAuth?.currentUser?.uid)
+    const [date, setDate] = useState(new Date())
     const [glass, setGlasses] = useState("")
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [time, setTime] = useState("")
@@ -92,6 +95,10 @@ const NewEntry = () => {
         })
     }, [])
 
+    function setNotification() {
+        Notification.scheduleNotification(date)
+    }
+    
     return (
         <View style={styles.container}>
             <View style={{ marginHorizontal: 20 }}>
@@ -112,13 +119,19 @@ const NewEntry = () => {
                 </View>
             </View>
             <WaterInTakeBtn title={"Confirm"} onPress={() => handleConfirm()} />
-            <View style={{ marginTop: 30 }}></View>
-            <View style={styles.box_shadow}>
+            <View style={{ marginTop: 30 }}>
+                <DatePicker
+                    date={date}
+                    onDateChange={setDate}
+                />
+                <Text onPress={() => setNotification()}>Set Timer</Text>
+            </View>
+            {/* <View style={styles.box_shadow}>
                 <View style={styles.waterConsumptionTime}>
                     <Text style={styles.headingTxt2}>Time of water consumption</Text>
                     <Text style={{ fontSize: 12 }}>{currentTime}</Text>
                 </View>
-            </View>
+            </View> */}
             <View style={styles.box_shadow}>
                 <View style={styles.waterConsumptionTime}>
                     <View style={{ flexDirection: 'row' }}>
@@ -164,3 +177,29 @@ const NewEntry = () => {
 
 
 export default NewEntry
+
+
+{/* <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+<meta-data android:name="com.dieam.reactnativepushnotification.notification_channel_name" android:value="NotifcationDemo"/>
+<meta-data android:name="com.dieam.reactnativepushnotification.notification_channel_description" android:value="NotifcationDemo Notifications"/>
+<!-- Change the resource name to your App's accent color - or any other color you want -->
+<meta-data android:name="com.dieam.reactnativepushnotification.notification_color" android:resource="@android:color/white"/>
+
+<receiver android:name="com.google.android.gms.gcm.GcmReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
+   <intent-filter>
+      <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+       <category android:name="${applicationId}" />
+   </intent-filter>
+</receiver>
+<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+    <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+    </intent-filter>
+</receiver>
+<service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationRegistrationService"/>
+<service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerServiceGcm" android:exported="false">
+    <intent-filter>
+       <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+    </intent-filter>
+</service> */}

@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 import React, { useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { useSelector } from 'react-redux'
@@ -23,6 +23,13 @@ const NavContainer = () => {
     const Stack = createNativeStackNavigator()
     const Drawer = createDrawerNavigator()
 
+    const myTheme = {
+        ...DefaultTheme,
+        colors: {
+            ...DefaultTheme.colors,
+            background: "white"
+        }
+    }
 
     const AuthStack = () => {
         return (
@@ -112,7 +119,7 @@ const NavContainer = () => {
 
     const RootNavigation = () => {
         return (
-            <NavigationContainer>
+            <NavigationContainer theme={myTheme}>
                 {token === null ? <AuthStack /> : <MyStack />}
             </NavigationContainer>
         )
